@@ -1,29 +1,32 @@
 
 github APIを用いて、コミット数を取得する
 
-#使用方法
+# 使用方法
 
-githubのユーザー名、githubのアクセストークンを環境変数として指定する必要があります。
+- githubのコミット数の取得のためgithubのユーザー名、githubのアクセストークンを環境変数として指定する必要があります。
+- twitter APIによる投稿のため、
+
+githubのsettings, twitter developerそれぞれの画面から必要なデータを取得して、
+.envファイルに記述します。
+(AWS lambdaなどを使う場合は環境変数に設定する)
 
 ```
-$ GITHUB_USERNAME=xxx GITHUB_ACCESS_TOKEN=yyy node ./tweet-github-commit-count.js
+GITHUB_USERNAME=
+GITHUB_ACCESS_TOKEN=
+TWITTER_APP_KEY=
+TWITTER_APP_SECRET=
+TWITTER_ACCESS_TOKEN=
+TWITTER_ACCESS_SECRET=
 ```
 
+以下のコマンドを毎晩12時ぐらいに実行するようにしておきます。(AWS lambdaなどで定期実行)
+```
+$ node ./tweet-github-commit-count.js
+```
 
-#作業ログ
+# 使用ライブラリ
 
-- mkdir tweet_github_commit_count
-
-- github APIを使うためにoctokit/coreをインストール
-  - npm init
-  - npm install @octokit/core
-
-## 作業ログ:コミット
-
-- git init
-- git add -A
-- git commit -m "initial commit"
-- github側でリポジトリ作成しておく
-- git remote add origin https://github.com/yashyoshida/tweet-github-commit-count.git
-- git push -u origin master
+- @octokit/core ... github API用
+- twitter-api-v2 ... twitter APIを用いたツイート用
+- dotenv ... .envファイル読み込み用
 

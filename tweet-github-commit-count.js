@@ -1,27 +1,43 @@
 // for using github API
 const { Octokit } = require("@octokit/core");
+// for using twitter API
+const { TwitterApi } = require('twitter-api-v2')
+// load .env
+require('dotenv').config()
 
 let githubUsername = null
 let githubAccessToken = null
 let octokit = null
+let twitterClient = null
 
 function printUsage() {
-    console.log('GITHUB_USERNAME=xxx GITHUB_ACCESS_TOKEN=yyy node ./tweet-github-commit-count.js')
+    console.log('GITHUB_USERNAME=xxx GITHUB_ACCESS_TOKEN=xxx TWITTER_APP_KEY=xxx TWITTER_APP_SECRET=xxx TWITTER_ACCESS_TOKEN=xxx TWITTER_ACCESS_SECRET=xxx node ./tweet-github-commit-count.js')
+    console.log('  you can specify environment variables by .env')
 }
 
 function loadEnv() {
-    if (!process.env['GITHUB_USERNAME']) {
-        console.log('please specify environment variable:GITHUB_USERNAME')
-        printUsage()
-        process.exit(1)
-    }
-    if (!process.env['GITHUB_ACCESS_TOKEN']) {
-        console.log('please specify environment variable:GITHUB_ACCESS_TOKEN')
+    if (!process.env['GITHUB_USERNAME'] || !process.env['GITHUB_ACCESS_TOKEN'] ||
+        !process.env['TWITTER_APP_KEY'] || !process.env['TWITTER_APP_SECRET'] ||
+        !process.env['TWITTER_ACCESS_TOKEN'] || !process.env['TWITTER_ACCESS_SECRET']) {
+        console.log('please specify environment variables')
         printUsage()
         process.exit(1)
     }
     githubUsername = process.env['GITHUB_USERNAME']
     githubAccessToken = process.env['GITHUB_ACCESS_TOKEN']
+}
+
+function initTwitterClient() {
+    twitterClient = new TwitterApi({
+        appKey: process.env['TWITTER_APP_KEY'],
+        appSecret: process.env['TWITTER_APP_SECRET'],
+        accessToken: process.env['TWITTER_ACCESS_TOKEN'],
+        accessSecret: process.env['TWITTER_ACCESS_SECRET'],
+      });
+}
+
+async function tweet(msg) {
+    await twitterClient.v1.tweet(msg)
 }
 
 // github APIコールに用いるoctokitの初期化
@@ -64,7 +80,10 @@ async function main() {
     let events = await getGithubEvents(octokit, githubUsername)
     events = filterEventsIn24Hours(events)
     let commits = calcCommitsOfEvents(events)
-    console.log(commits)
+
+    initTwitterClient()
+    let msg = `【自動投稿】今日のgithubへの私のコミット数は ${commits} でした。`
+    tweet(msg)
 }
 
 main()

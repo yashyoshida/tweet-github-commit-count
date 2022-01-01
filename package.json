@@ -4,7 +4,9 @@
   "description": "- mkdir tweet_commit_count",
   "main": "index.js",
   "dependencies": {
-    "@octokit/core": "^3.5.1"
+    "@octokit/core": "^3.5.1",
+    "dotenv": "^10.0.0",
+    "twitter-api-v2": "^1.8.0"
   },
   "devDependencies": {},
   "scripts": {
