@@ -4,12 +4,19 @@ github APIを用いて、コミット数を取得する
 # 使用方法
 
 - githubのコミット数の取得のためgithubのユーザー名、githubのアクセストークンを環境変数として指定する必要があります。
-- twitter APIによる投稿のため、
+- twitter APIによる投稿のため、twitter APIのAPP_KEY, APP_SECRET, ACCESS_TOKEN, ACCESS_SECRETを取得し、環境変数として指定する必要があります。
 
-githubのsettings, twitter developerそれぞれの画面から必要なデータを取得して、
+# .envファイルの設定
+
+- sample.envを.envにコピーし、githubのsettings, twitter developerそれぞれの画面から必要なデータを取得して、
 .envファイルに記述します。
 (AWS lambdaなどを使う場合は環境変数に設定する)
 
+```
+$ cp sample.env .env
+```
+
+- =以降を埋めます。
 ```
 GITHUB_USERNAME=
 GITHUB_ACCESS_TOKEN=
